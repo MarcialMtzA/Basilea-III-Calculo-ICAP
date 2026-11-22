@@ -17,7 +17,7 @@ primero con los archivos Excel de ejemplo incluidos en el proyecto.
 1. REQUISITOS
 -------------
 1. Tener instalados R y RStudio.
-2. Contar con la carpeta completa "Proyecto_Final_MAM", conservando su estructura.
+2. Contar con la carpeta completa "BASILEA_3_PROYECTO_CALCULO_ICAP", conservando su estructura.
 3. Tener instaladas las librerías utilizadas en el proyecto.
 
    Para instalarlas desde la consola de R (solo es necesario hacerlo una vez):
