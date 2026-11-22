@@ -1,0 +1,38 @@
+---
+title: "Para Riesgo d Credito"
+author: "Marcial"
+date: "2025-12-19"
+output: html_document
+---
+```{r}
+df <- read_excel(
+  "data/Marcial Martínez Alcántara - TAREA EXAMEN RIESGO DE CRÉDITO.xlsx",
+  sheet = "BASE"
+)
+df<-df%>%select(3:8)%>%unique()
+#write_xlsx(df,"Asignar_Grupo_Riesgo.xlsx")
+```
+```{r}
+read_excel("data/Asignar_Grupo_Riesgo.xlsx")
+```
+```{r}
+df <- read_excel(
+  "data/Marcial Martínez Alcántara - TAREA EXAMEN RIESGO DE CRÉDITO.xlsx",
+  sheet = "Calificaciones", range = "A5:H337"
+)
+df<-df%>%mutate(Ponderador=Ponderador/100)
+#write_xlsx(df,"calificaciones.xlsx")
+```
+
+```{r}
+read_excel("data/calificaciones.xlsx")
+```
+```{r}
+df<-calificaciones%>%select(1,2)%>%arrange(Clave)
+#write_xlsx(df,"ponderador_segun_cal.xlsx")
+```
+
+```{r}
+read_xlsx(path = "data/Ponderador_segun_calificacion.xlsx")
+```
+

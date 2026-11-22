@@ -1,0 +1,110 @@
+---
+title: "Preprocesamiento para obtener catalogo para calcular capital neto"
+author: "Marcial"
+date: "2025-12-21"
+output: html_document
+---
+cargamos el archivo capital neto
+```{r}
+df<-read_xlsx(path="data/CAPITAL NETO.xlsx", sheet="plantilla", range = "B24:E125")
+#df #para visualizar
+```
+seleccionamos las primers 2 columnas
+```{r}
+df<-df%>%select(2,4)%>%drop_na()
+#df #para visualizar
+```
+cambiamos nombres
+```{r}
+colnames(df)[1]<-"concepto"
+colnames(df)[2]<-"Descripción"
+```
+hacemos algunos cambios para poder usar nuestras funciones mas adelante
+```{r}
+df[29,1]<-"95667,95286,95700"
+df[30,1]<-"95668,95284,95699"
+df[31,1]<-"95295,95290"
+df[47,1]<-"0,95380,95390"
+df <- df[-50, ]   # borra fila 5
+df <- df[-53, ]   # borra fila 5
+df[58,1]<-"0, 95075, 1"
+df[60,1]<-"1"
+df <- df%>%
+    add_row(concepto = "95550",
+            Descripción= "Monto máximo permitido de Obligaciones Subordinadas e Instrumentos de capital emitidos con anterioridad al 31 de diciembre de 2012 que computan como Capital Básico No Fundamental",
+      .after = 60 
+    )
+df[64,1]<-"0, 95080, 2"
+df[66,1]<-"2"
+df[68,1]<-"0,95691,95695"
+df[72,1]<-"0, 95704, 95708"
+df[71,1]<-""
+df[75,1]<-""
+```
+creamos vectores para despues hacerlas columnas
+```{r}
+Clase <- c("I", "I", "I", 
+           "II", "II", "II", "II", "II", "II",
+           "III", "III", "III",
+           "IV.1", "IV.1", "IV.1", "IV.1", "IV.1", "IV.1", "IV.1", "IV.1", "IV.1", "IV.1", "IV.1",
+           "IV.2",
+           "IV.3", "IV.3", "IV.3", "IV.3",
+           "V.1", "V.2", "V.3",
+           "V", "V",
+           "VI", "VI", "VI",
+           "VII", "VII", "VII.1", "VII.1", "VII", "VII.2", "VII.2",
+           "VIII.1", "VIII.1", "VIII.1", "VIII.2", "VIII.2", "VIII.2",
+           "IX", "IX",
+           "X",
+           "XI", "XI", "XI",
+           "XII", "XII",
+           "XIII.1", "XIII.2", "XIII.3",
+           "XIV",
+           "XV", "XV",
+           "XVI.1", "XVI.2", "XVI.3",
+           "XVII",
+           "XVIII.1", "XVIII.2", "XVIII.3", "a.3", "XVIII.4", "XVIII.5", "XVIII.6", "b.3")
+
+Rubros_contables <- c(
+  rep("Capital Contribuido", 3),
+  rep("Capital Ganado", 6),
+  rep("Inversiones en otros instrumentos", 3),
+  rep("Inversiones en entidades financieras (Directas e Indirectas)", 11),
+  "Inversiones indirectas",
+  rep("Inversiones en entidades no financieras", 4),
+  rep("Reservas", 5),
+  rep("Aportaciones y financiamientos", 3),
+  rep("Intangibles", 7),
+  rep("Impuestos Diferidos PARTIDAS A FAVOR PROVENIENTES DE PÉRDIDAS Y CRÉDITOS FISCALES", 3),
+  rep("IMPUESTOS DIFERIDOS, PARTIDAS A FAVOR PROVENIENTES DE  DIFERENCIAS TEMPORALES", 3),
+  rep("RESULTADO POR VALUACIÓN DE INSTRUMENTOS DE COBERTURA DE FLUJOS DE EFECTIVO PARTIDAS VALUADAS A COSTO AMORTIZADO", 2),
+  "MONTO A DEDUCIR DE OPERACIONES REALIZADAS CON PERSONAS RELACIONADAS RELEVANTES",
+  rep("MONTO A DEDUCIR DE OPERACIONES REALIZADAS CON GRANDES EXPOSICIONES QUE EXCEDEN LOS LÍMITES ESTABLECIDOS EN EL ARTÍCULO 54 DE LA CUB", 3),
+  rep("TÍTULOS REPRESENTATIVOS  DEL CAPITAL SOCIAL", 2),
+  rep("INSTRUMENTOS DE CAPITAL", 3),
+  "TÍTULOS ART.64 DE LA LIC. EMITIDOS ANTES DEL 31 DE DICIEMBRE 2012( TRANSITORIOS)",
+  rep("TÍTULOS REPRESENTATIVOS  DEL CAPITAL SOCIAL", 2),
+  rep("INSTRUMENTOS DE CAPITAL", 3),
+  "TÍTULOS ART. 64  DE LA LIC. EMITIDOS ANTÉS DEL 31 DE DICIEMBRE 2012( TRANSITORIOS)",
+  rep("Reservas", 8)
+)
+
+Nivel_de_capital <- c(
+  rep("Parte Fundamental", 55),
+  rep("Parte Basica No Fundamental", 6),
+  rep("Parte Complementaria", 14)
+)
+
+
+```
+agregamos las columnas
+```{r}
+df <- df %>%
+  mutate("Clase" = Clase, .after = 1)
+df <- df %>%
+  mutate("Rubros contables" = Rubros_contables)
+df <- df %>%
+  mutate("Nivel de capital" = Nivel_de_capital)
+df #vemos el resultado
+```
+

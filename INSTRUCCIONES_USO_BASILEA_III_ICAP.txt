@@ -1,0 +1,212 @@
+GUÍA DE USO - APLICACIÓN BASILEA III: CAPITAL NETO Y RIESGO DE CRÉDITO
+===================================================================
+Proyecto académico de Seminario de Finanzas I
+Los datos obtenidos fueron proporcionados por la M. en F. Estefanía Guadalupe Arellano Martínez maestra de la Facultad de ciencias de la UNAM
+Aplicación desarrollada en R con Shiny
+
+OBJETIVO
+--------
+Este documento explica cómo iniciar y utilizar la aplicación para:
+  A) Calcular el Capital Neto y sus indicadores de capitalización (incluido el ICAP).
+  B) Calcular y consultar los activos ponderados por riesgo de crédito.
+
+La aplicación contiene dos módulos independientes. Se recomienda probarlos
+primero con los archivos Excel de ejemplo incluidos en el proyecto.
+
+
+1. REQUISITOS
+-------------
+1. Tener instalados R y RStudio.
+2. Contar con la carpeta completa "Proyecto_Final_MAM", conservando su estructura.
+3. Tener instaladas las librerías utilizadas en el proyecto.
+
+   Para instalarlas desde la consola de R (solo es necesario hacerlo una vez):
+
+   install.packages(c("shiny", "bslib", "tidyverse", "magrittr",
+                      "readxl", "dplyr", "writexl", "scales",
+                      "kableExtra", "ggplot2", "rstudioapi"))
+
+Archivos y carpetas esenciales:
+  Proyecto_Final_MAM/
+    main.R
+    Proyecto_Final_MAM.Rproj
+    para_probar_capital_neto.xlsx
+    para_probar_riesgo_d_credito.xlsx
+    scripts/
+      funciones.R
+      objetos.R
+    data/
+      Catalogo.xlsx
+      Asignar_Grupo_Riesgo.xlsx
+      calificaciones.xlsx
+      Ponderador_segun_calificacion.xlsx
+      [otros archivos de referencia del proyecto]
+
+IMPORTANTE: No se deben mover ni renombrar las carpetas "scripts" y "data"
+ni sus archivos de catálogo. El código utiliza rutas relativas para leerlos.
+
+
+2. ABRIR LA APLICACIÓN
+----------------------
+1. Descargar o clonar el repositorio y descomprimirlo, si corresponde.
+2. Abrir "Proyecto_Final_MAM.Rproj" con RStudio.
+3. Abrir "main.R" en el editor de RStudio.
+4. Ejecutar el código completo desde el editor (por ejemplo, con "Source"
+   o el control de ejecución disponible en RStudio).
+5. Esperar a que se abra la ventana local de Shiny. También puede mostrarse
+   en el navegador. La dirección tendrá un formato similar a:
+   http://127.0.0.1:PUERTO
+
+La aplicación se ejecuta localmente: ese enlace solo funciona en el equipo
+donde se inició la sesión de R. No es una dirección pública de GitHub.
+
+
+3. MÓDULO A: CALCULAR CAPITAL NETO E ICAP
+-----------------------------------------
+PASO 1. En el menú lateral seleccionar la opción "Capital Neto".
+
+PASO 2. Completar los tres campos numéricos:
+
+  - Activos sujetos a riesgo totales (ASRT).
+  - Activos sujetos a riesgo de crédito (método interno).
+  - Activos sujetos a riesgo de crédito (método estándar).
+
+  Utilizar cifras consistentes en una misma unidad monetaria. En la plantilla
+  de referencia del proyecto las cifras están expresadas en millones de pesos.
+  La aplicación solicita valores numéricos no negativos.
+
+  EJEMPLO DEL PROYECTO:
+
+  Campo                                                   Valor
+  -----------------------------------------------------   ---------
+  Activos sujetos a riesgo totales                         155988.96
+  Activos a riesgo de crédito (método interno)               50000
+  Activos a riesgo de crédito (método estándar)             105988.96
+
+  Para este conjunto de ejemplo, los dos componentes de crédito suman
+  155988.96. Esta igualdad corresponde a la plantilla de prueba y no debe
+  interpretarse como una regla universal para cualquier entidad o ejercicio.
+
+PASO 3. Pulsar "Browse..." en la sección que solicita un archivo Excel con
+        una columna "concepto" y otra "importe".
+
+PASO 4. Seleccionar el archivo de prueba:
+
+        para_probar_capital_neto.xlsx
+
+        La primera hoja debe contener, como mínimo, estas columnas:
+          concepto | importe
+
+        "concepto" identifica las claves contables; "importe" contiene
+        sus valores numéricos. Conservar las claves y evitar duplicados.
+        La app lee la primera hoja del archivo Excel.
+
+PASO 5. Verificar que la interfaz muestre el nombre del archivo cargado y el
+        número de filas y columnas.
+
+PASO 6. Pulsar "Calcular Capital Neto".
+
+PASO 7. Revisar los resultados en el panel principal:
+
+  - Gráfica de capital básico y complementario.
+  - Gráfica de capital fundamental, no fundamental y complementario.
+  - Tabla de cálculos de capitalización.
+
+  Entre los indicadores se encuentran:
+  - Índice de Capitalización (ICAP).
+  - Coeficiente de capital fundamental.
+  - Coeficiente de capital básico.
+
+  La aplicación calcula el ICAP como:
+
+       ICAP (%) = (Capital Neto / Activos sujetos a riesgo totales) x 100
+
+  Con los datos de prueba, la app muestra aproximadamente:
+       ICAP:                              16.24 %
+       Coeficiente de capital fundamental:13.59 %
+       Coeficiente de capital básico:     15.20 %
+
+PASO 8. Consultar el Excel generado automáticamente:
+
+        excel_capital_neto.xlsx
+
+        Se guarda en la carpeta de trabajo del proyecto al ejecutar el cálculo.
+        Contiene el detalle procesado, además de lo resumido en la pantalla.
+
+
+4. MÓDULO B: CALCULAR RIESGO DE CRÉDITO
+---------------------------------------
+PASO 1. En el menú lateral seleccionar "Riesgo de Crédito".
+
+PASO 2. Pulsar "Browse..." y seleccionar:
+
+        para_probar_riesgo_d_credito.xlsx
+
+        La aplicación lee la primera hoja y utiliza las primeras 27 columnas.
+        Para un archivo propio, se recomienda usar el Excel de prueba como
+        plantilla, conservando los encabezados y el orden de las columnas.
+        Entre los datos requeridos se incluyen:
+
+        - Tipo de Cartera y Actividad Económica.
+        - Clave del tamaño de la empresa.
+        - Grupo de Riesgo.
+        - Clave Calificación y Nomenclatura de la calificación.
+        - Ponderador de Riesgo.
+        - Tipo de línea y factores de conversión.
+        - Monto dispuesto y monto no dispuesto.
+        - Reservas y garantías.
+
+        La función incorpora catálogos desde la carpeta "data" para asignar
+        grupos y ponderadores de riesgo. Si se altera la estructura del Excel,
+        puede fallar el procesamiento o modificarse el resultado.
+
+PASO 3. Confirmar que Shiny muestre el nombre del archivo y el número de
+        filas y columnas.
+
+PASO 4. Pulsar "Calcular Riesgo de Crédito".
+
+PASO 5. Consultar las dos tablas que aparecen en pantalla:
+
+        A) "Créditos dispuestos": agrupaciones por grupo de riesgo,
+           ponderador y factor de conversión, con saldos, reservas, garantías,
+           exposición al incumplimiento y activos sujetos a riesgo.
+
+        B) "Líneas de crédito (no dispuestas)": agrupaciones de líneas,
+           ponderadores, factores de conversión, montos no dispuestos y
+           activos ponderados.
+
+PASO 6. Consultar los dos archivos Excel generados automáticamente:
+
+        excel_creditos_dispuestos.xlsx
+        excel_lineas_d_credito.xlsx
+
+        Estos archivos se guardan en la carpeta de trabajo del proyecto.
+
+
+5. RECOMENDACIONES DE USO Y VALIDACIÓN
+--------------------------------------
+- Comprobar que los archivos de entrada se abran correctamente en Excel y que
+  sus columnas contengan el tipo de información esperado.
+- Usar la misma unidad monetaria para todos los importes y entradas manuales.
+- Para Capital Neto, no dejar vacíos los tres campos numéricos.
+- No renombrar los encabezados del archivo de riesgo ni cambiar su orden.
+- No eliminar los archivos de catálogo de la carpeta "data".
+- Si las gráficas o tablas no aparecen, confirmar que se eligió el módulo
+  correcto, se cargó el Excel correspondiente y se pulsó el botón de cálculo.
+- Guardar una copia de los Excel de salida si se desea conservar resultados de
+  distintas ejecuciones: una ejecución posterior puede sobrescribirlos.
+- Si se usan datos financieros reales, verificar que esté permitido compartirlos
+  antes de publicarlos en un repositorio público.
+
+NOTA SOBRE LOS DOS MÓDULOS:
+Los cálculos de Capital Neto y de Riesgo de Crédito se ejecutan por separado.
+La aplicación no transfiere automáticamente los resultados del segundo módulo
+a los tres campos numéricos del primero. Esos valores deben proporcionarse
+manualmente, de acuerdo con el escenario que se desea analizar.
+
+AVISO:
+Herramienta con fines académicos y demostrativos. Los resultados deben
+revisarse con las hipótesis, datos y metodología del proyecto antes de usarse
+para decisiones regulatorias o financieras reales.
+
+FIN DE LA GUÍA
